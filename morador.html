@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Cadastro de Moradores</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="morador.css">
+</head>
+<body>
+
+<div class="app">
+
+    <!-- TOPO CADASTRO -->
+    <header class="topo" id="btnAbrirCadastro">
+        <h1>Cadastro de Morador</h1>
+        <p>Sistema de Condomínio</p>
+    </header>
+
+    <!-- FORMULÁRIO -->
+    <form id="formMorador" class="card">
+
+        <div class="foto-container">
+            <img id="previewFoto">
+        </div>
+
+        <div class="grupo">
+            <label>Nome</label>
+            <input type="text" id="nome" required>
+        </div>
+
+        <div class="linha">
+            <div class="grupo">
+                <label>Unidade</label>
+                <input type="text" id="unidade" required>
+            </div>
+
+            <div class="grupo">
+                <label>Ocupação</label>
+                <select id="ocupacao" required>
+                    <option value="">Selecione</option>
+                    <option>Proprietário</option>
+                    <option>Inquilino</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="linha">
+            <div class="grupo">
+                <label>Documento</label>
+                <input type="text" id="documentos" required>
+            </div>
+
+            <div class="grupo">
+                <label>Tipo</label>
+                <select id="tipoDocumento" required>
+                    <option>CPF</option>
+                    <option>RG</option>
+                    <option>CNH</option>
+                    <option>Outros</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="linha">
+            <div class="grupo">
+                <label>Telefone</label>
+                <input type="text" id="telefones" required>
+            </div>
+
+            <div class="grupo">
+                <label>E-mail</label>
+                <input type="email" id="email">
+            </div>
+        </div>
+
+        <div class="grupo">
+            <label>Mensagem</label>
+            <textarea id="mensagem"></textarea>
+        </div>
+
+        <h2>🚗 Veículos</h2>
+        <div id="veiculos"></div>
+
+        <div class="acoes-form">
+            <label class="btn-acao foto">
+                📷 Foto
+                <input type="file" id="foto" accept="image/*" hidden>
+            </label>
+
+            <button type="button" id="adicionarVeiculo" class="btn-acao veiculo">
+                🚗 Veículo
+            </button>
+
+            <button type="submit" class="btn-acao salvar">
+                💾 Salvar
+            </button>
+        </div>
+    </form>
+
+    <!-- TOPO LISTA -->
+    <header class="topo" id="btnAbrirLista">
+        <h1>Moradores Cadastrados</h1>
+        <p>Lista geral do condomínio</p>
+    </header>
+
+    <!-- LISTA -->
+    <div id="listaMoradores"></div>
+
+</div>
+
+<script src="morador.js"></script>
+</body>
+</html>
