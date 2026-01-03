@@ -42,7 +42,7 @@ request.onupgradeneeded = e => {
     db = e.target.result;
     if (!db.objectStoreNames.contains("moradores")) {
         db.createObjectStore("moradores", { keyPath: "id", autoIncrement: true });
-        console.log("Object store criada");
+        console.log("Object store 'moradores' criada");
     }
 };
 
@@ -50,13 +50,20 @@ request.onsuccess = e => {
     db = e.target.result;
     console.log("Banco carregado com sucesso");
 
-    criarVeiculo(); // cria primeiro veículo
-    form.addEventListener("submit", salvarMorador); // associa submit
+    // Cria o primeiro veículo automaticamente
+    veiculosDiv.innerHTML = "";
+    criarVeiculo();
+
+    // Associa o submit do formulário
+    form.addEventListener("submit", salvarMorador);
+
+    // Lista os moradores existentes
+    listarMoradores();
 };
 
 request.onerror = () => {
-    console.log("Erro ao abrir o banco");
-    alert("Erro ao abrir o banco de dados.");
+    console.error("Erro ao abrir o banco de dados");
+    alert("Erro ao abrir o banco de dados. Veja o console para detalhes.");
 };
 
 // === ABRIR / FECHAR FORMULÁRIO ===
@@ -106,6 +113,12 @@ function salvarMorador(e) {
         return;
     }
 
+    // Validação rápida
+    if (!nome.value || !unidade.value || !ocupacao.value || !documentos.value) {
+        alert("Preencha todos os campos obrigatórios!");
+        return;
+    }
+
     // Pegando os veículos
     const veiculos = [...document.querySelectorAll(".veiculo")].map(v => ({
         placa: v.querySelector(".placa").value,
@@ -127,7 +140,11 @@ function salvarMorador(e) {
 
     const tx = db.transaction("moradores", "readwrite");
     const store = tx.objectStore("moradores");
-    store.add(morador);
+    const requestAdd = store.add(morador);
+
+    requestAdd.onsuccess = () => {
+        console.log("Morador salvo:", morador);
+    };
 
     tx.oncomplete = () => {
         alert("Morador salvo com sucesso!");
@@ -140,17 +157,21 @@ function salvarMorador(e) {
         listarMoradores();
     };
 
-    tx.onerror = () => {
-        alert("Erro ao salvar morador.");
+    tx.onerror = e => {
+        console.error("Erro ao salvar morador:", e.target.error);
+        alert("Erro ao salvar morador. Veja o console.");
     };
 }
 
 // === LISTAR MORADORES ===
 function listarMoradores() {
+    if (!db) return;
+
     listaMoradores.innerHTML = "";
 
     const tx = db.transaction("moradores", "readonly");
     const store = tx.objectStore("moradores");
+
     store.openCursor().onsuccess = e => {
         const cursor = e.target.result;
         if (cursor) {
@@ -160,9 +181,10 @@ function listarMoradores() {
             card.className = "card";
 
             card.innerHTML = `
-                ${m.foto ? `<img src="${m.foto}" style="width:70px;height:70px;border-radius:50%">` : ""}
+                ${m.foto ? `<img src="${m.foto}" style="width:70px;height:70px;border-radius:50%; margin-bottom:5px">` : ""}
                 <strong>${m.nome}</strong><br>
-                Unidade: ${m.unidade}
+                Unidade: ${m.unidade} <br>
+                Ocupação: ${m.ocupacao}
                 <ul>
                     ${m.veiculos.map(v => `<li>${v.placa} - ${v.modelo}</li>`).join("")}
                 </ul>
